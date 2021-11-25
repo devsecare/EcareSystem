@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "986428445065",
+    "project_id": "ecare-employee-management",
+    "storage_bucket": "ecare-employee-management.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:986428445065:android:a75a4cdc77a678ebac1158",
+        "android_client_info": {
+          "package_name": "com.example.ecaresystem"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "986428445065-ml86jtscmc5g1uoph42bu1lf0cf8fr54.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBNpEyo_yY9ac_3QCBi-B8sysq8p-3Asl0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "986428445065-ml86jtscmc5g1uoph42bu1lf0cf8fr54.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
