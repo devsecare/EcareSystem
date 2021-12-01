@@ -6,7 +6,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../constants.dart';
-import 'department_filter.dart';
 
 class DepartmentScreen extends StatefulWidget {
   final QuerySnapshot department;
