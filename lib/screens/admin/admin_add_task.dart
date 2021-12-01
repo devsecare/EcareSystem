@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sizer/sizer.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
 
 class AddTaskScreen extends StatefulWidget {
   const AddTaskScreen({Key? key}) : super(key: key);
@@ -379,14 +380,22 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                     ElevatedButton.icon(
                       onPressed: () async {
                         if (_formkey.currentState!.validate()) {
-                          await DataBase("")
-                              .addTask(_taskname.text, _hours.text, clientname);
+                          // await DataBase("")
+                          //     .addTask(_taskname.text, _hours.text, clientname);
 
-                          Get.snackbar("Task Added", "Your Task Added",
-                              backgroundColor: Colors.black,
-                              colorText: Colors.white);
+                          // Get.snackbar("Task Added", "Your Task Added",
+                          //     backgroundColor: Colors.black,
+                          //     colorText: Colors.white);
                           _taskname.clear();
                           _hours.clear();
+                          final Email email = Email(
+                            body: 'Email body',
+                            subject: 'Email subject',
+                            recipients: ['jayveersinh.ecareinfoway@gmail.com'],
+                            isHTML: false,
+                          );
+
+                          await FlutterEmailSender.send(email);
                         }
                       },
                       icon: const Icon(Icons.arrow_forward_ios),
