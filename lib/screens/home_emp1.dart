@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecaresystem/constants.dart';
+import 'package:ecaresystem/model/emailmodel.dart';
 import 'package:ecaresystem/services/auth.dart';
 import 'package:ecaresystem/services/database/database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -380,25 +382,64 @@ class _HomeEmpState extends State<HomeEmp> {
                     Center(
                       child: ElevatedButton.icon(
                         onPressed: () async {
-                          final da = DateTime.now();
-                          final DateFormat formatter = DateFormat('yMMMMd');
-                          final String formatted = formatter.format(da);
+                          // final da = DateTime.now();
+                          // final DateFormat formatter = DateFormat('yMMMMd');
+                          // final String formatted = formatter.format(da);
 
-                          await DataBase(_auth.user.value!.uid).addTaskDaily(
-                            formatted,
-                            taskvalue,
-                            hoursvalue,
-                            minutesvalue ?? "00",
-                            _comments.text,
-                            user.get("Department"),
-                            name,
-                            clientname,
+                          // await DataBase(_auth.user.value!.uid).addTaskDaily(
+                          //   formatted,
+                          //   taskvalue,
+                          //   hoursvalue,
+                          //   minutesvalue ?? "00",
+                          //   _comments.text,
+                          //   user.get("Department"),
+                          //   name,
+                          //   clientname,
+                          // );
+                          // Get.snackbar(
+                          //     "Task Added", "Your Task And Hours Added",
+                          //     backgroundColor: Colors.black,
+                          //     colorText: Colors.white);
+                          // _comments.clear();
+
+                          var dd = await DataBase("")
+                              .getDailyTaskforEmail("Jayveersinh");
+                          print(dd.docs.length);
+                          // // print(dd.docs.forEach((element) {
+
+                          // // }));
+                          List<EmailData> data = [];
+                          for (var element in dd.docs) {
+                            data.add(EmailData(
+                              hours: element.get("Hours"),
+                              min: element.get("minutes"),
+                              taskname: element.get("Taskname"),
+                            ));
+                          }
+                          // List<String> sd = [];
+                          // for (var i = 0; i < data.length; i++) {
+                          //   sd.add(data[i].taskname);
+                          // }
+                          // print(sd);
+                          // var ff = sd.join(" ");
+                          // print(ff);
+
+                          var fi = data
+                              .map((e) =>
+                                  '''${e.taskname.toString()} :- ${e.hours.toString()}:${e.min.toString()}\n''')
+                              .join(" ");
+
+                          print(fi);
+
+                          final Email email = Email(
+                            body: fi.toString(),
+                            subject:
+                                'jayveersinh - Daily Task - ${dd.docs.first.get("Date")}',
+                            recipients: ['meet.ecareinfoway@gmail.com'],
+                            isHTML: false,
                           );
-                          Get.snackbar(
-                              "Task Added", "Your Task And Hours Added",
-                              backgroundColor: Colors.black,
-                              colorText: Colors.white);
-                          _comments.clear();
+
+                          await FlutterEmailSender.send(email);
                         },
                         icon: const Icon(Icons.arrow_forward_ios),
                         label: const Text("SAVE"),

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 // ignore: non_constant_identifier_names
 String DAILYTASK = "Daily Tasks";
@@ -173,5 +174,23 @@ class DataBase extends GetxController {
 
   Future<QuerySnapshot> getDepartment() async {
     return await department.get();
+  }
+
+  Future<QuerySnapshot> getDailyTaskforEmail(String name) async {
+    final da = DateTime.now();
+    final DateFormat formatter = DateFormat('yMMMMd');
+    final String formatted = formatter.format(da);
+    // var dd = await dailyTask
+    //     .snapshots()
+    //     .map((event) => event.docs.where((element) =>
+    //         element["User"] == name && element["Date"] == formatted))
+    //     .toList();
+
+    // return dd;
+
+    return await dailyTask
+        .where("User", isEqualTo: name)
+        .where("Date", isEqualTo: formatted)
+        .get();
   }
 }
