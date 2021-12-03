@@ -55,6 +55,30 @@ class _HomeEmpState extends State<HomeEmp> {
     setState(() {});
   }
 
+  _triggerEmail() async {
+    var dd = await DataBase("").getDailyTaskforEmail(name);
+
+    List<EmailData> data = [];
+    for (var element in dd.docs) {
+      data.add(EmailData(
+        hours: element.get("Hours"),
+        min: element.get("minutes"),
+        taskname: element.get("Taskname"),
+      ));
+    }
+    var fi = data
+        .map((e) =>
+            '''${e.taskname.toString()} :- ${e.hours.toString()}:${e.min.toString()}\n''')
+        .join(" ");
+    final Email email = Email(
+      body: fi.toString(),
+      subject: '$name - Daily Task - ${dd.docs.first.get("Date")}',
+      recipients: ['meet.ecareinfoway@gmail.com'],
+      isHTML: false,
+    );
+    await FlutterEmailSender.send(email);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,6 +88,12 @@ class _HomeEmpState extends State<HomeEmp> {
           "Add your working hours",
           style: GoogleFonts.manrope(),
         ),
+        actions: [
+          IconButton(
+            onPressed: _triggerEmail,
+            icon: const Icon(Icons.mark_email_read),
+          ),
+        ],
       ),
       body: _loading
           ? const Center(
@@ -401,45 +431,6 @@ class _HomeEmpState extends State<HomeEmp> {
                           //     backgroundColor: Colors.black,
                           //     colorText: Colors.white);
                           // _comments.clear();
-
-                          var dd = await DataBase("")
-                              .getDailyTaskforEmail("Jayveersinh");
-                          print(dd.docs.length);
-                          // // print(dd.docs.forEach((element) {
-
-                          // // }));
-                          List<EmailData> data = [];
-                          for (var element in dd.docs) {
-                            data.add(EmailData(
-                              hours: element.get("Hours"),
-                              min: element.get("minutes"),
-                              taskname: element.get("Taskname"),
-                            ));
-                          }
-                          // List<String> sd = [];
-                          // for (var i = 0; i < data.length; i++) {
-                          //   sd.add(data[i].taskname);
-                          // }
-                          // print(sd);
-                          // var ff = sd.join(" ");
-                          // print(ff);
-
-                          var fi = data
-                              .map((e) =>
-                                  '''${e.taskname.toString()} :- ${e.hours.toString()}:${e.min.toString()}\n''')
-                              .join(" ");
-
-                          print(fi);
-
-                          final Email email = Email(
-                            body: fi.toString(),
-                            subject:
-                                'jayveersinh - Daily Task - ${dd.docs.first.get("Date")}',
-                            recipients: ['meet.ecareinfoway@gmail.com'],
-                            isHTML: false,
-                          );
-
-                          await FlutterEmailSender.send(email);
                         },
                         icon: const Icon(Icons.arrow_forward_ios),
                         label: const Text("SAVE"),
