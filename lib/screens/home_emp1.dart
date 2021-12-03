@@ -73,7 +73,7 @@ class _HomeEmpState extends State<HomeEmp> {
     final Email email = Email(
       body: fi.toString(),
       subject: '$name - Daily Task - ${dd.docs.first.get("Date")}',
-      recipients: ['meet.ecareinfoway@gmail.com'],
+      recipients: ['ecareinfoway@gmail.com ', 'laxman@ecareinfoway.com '],
       isHTML: false,
     );
     await FlutterEmailSender.send(email);
