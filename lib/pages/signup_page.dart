@@ -107,6 +107,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ],
                       ),
                       child: Form(
+                        key: _formkey,
                         child: FittedBox(
                           child: Column(
                             children: [
@@ -287,9 +288,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 height: 2.5.h,
                               ),
                               ElevatedButton.icon(
-                                onPressed: () {
+                                onPressed: () async {
                                   if (_formkey.currentState!.validate()) {
-                                    AuthService()
+                                    await AuthService()
                                         .signUp(_email.text, _password.text)
                                         .then((val) async {
                                       await DataBase(_auth.user.value!.uid)

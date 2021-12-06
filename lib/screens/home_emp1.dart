@@ -68,7 +68,7 @@ class _HomeEmpState extends State<HomeEmp> {
     }
     var fi = data
         .map((e) =>
-            '''${e.taskname.toString()} :- ${e.hours.toString()}:${e.min.toString()}\n''')
+            '''${e.hours.toString()}:${e.min.toString()} :-   ${e.taskname.toString()}  \n''')
         .join(" ");
     final Email email = Email(
       body: fi.toString(),
@@ -412,25 +412,25 @@ class _HomeEmpState extends State<HomeEmp> {
                     Center(
                       child: ElevatedButton.icon(
                         onPressed: () async {
-                          // final da = DateTime.now();
-                          // final DateFormat formatter = DateFormat('yMMMMd');
-                          // final String formatted = formatter.format(da);
+                          final da = DateTime.now();
+                          final DateFormat formatter = DateFormat('yMMMMd');
+                          final String formatted = formatter.format(da);
 
-                          // await DataBase(_auth.user.value!.uid).addTaskDaily(
-                          //   formatted,
-                          //   taskvalue,
-                          //   hoursvalue,
-                          //   minutesvalue ?? "00",
-                          //   _comments.text,
-                          //   user.get("Department"),
-                          //   name,
-                          //   clientname,
-                          // );
-                          // Get.snackbar(
-                          //     "Task Added", "Your Task And Hours Added",
-                          //     backgroundColor: Colors.black,
-                          //     colorText: Colors.white);
-                          // _comments.clear();
+                          await DataBase(_auth.user.value!.uid).addTaskDaily(
+                            formatted,
+                            taskvalue,
+                            hoursvalue,
+                            minutesvalue ?? "00",
+                            _comments.text,
+                            user.get("Department"),
+                            name,
+                            clientname,
+                          );
+                          Get.snackbar(
+                              "Task Added", "Your Task And Hours Added",
+                              backgroundColor: Colors.black,
+                              colorText: Colors.white);
+                          _comments.clear();
                         },
                         icon: const Icon(Icons.arrow_forward_ios),
                         label: const Text("SAVE"),
