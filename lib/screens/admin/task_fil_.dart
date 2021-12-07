@@ -17,6 +17,7 @@ class TaskFilScreen extends StatefulWidget {
 
 class _TaskFilScreenState extends State<TaskFilScreen> {
   final contro = Get.find<DataBase>();
+  // ignore: prefer_typing_uninitialized_variables
   var data;
 
   @override

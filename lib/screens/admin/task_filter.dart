@@ -15,6 +15,7 @@ class TaskFilter extends StatefulWidget {
 
 class _TaskFilterState extends State<TaskFilter> {
   final contro = Get.find<DataBase>();
+  // ignore: prefer_typing_uninitialized_variables
   var data;
 
   @override

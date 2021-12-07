@@ -9,6 +9,8 @@ import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:mailer/mailer.dart';
+import 'package:mailer/smtp_server/gmail.dart';
 import 'package:sizer/sizer.dart';
 
 class HomeEmp extends StatefulWidget {
@@ -20,6 +22,7 @@ class HomeEmp extends StatefulWidget {
 
 class _HomeEmpState extends State<HomeEmp> {
   bool _loading = true;
+  bool _sending = false;
   final _auth = Get.find<AuthService>();
   late QuerySnapshot data;
   late QuerySnapshot client;
@@ -55,7 +58,38 @@ class _HomeEmpState extends State<HomeEmp> {
     setState(() {});
   }
 
-  _triggerEmail() async {
+  // _triggerEmail() async {
+  //   var dd = await DataBase("").getDailyTaskforEmail(name);
+
+  //   List<EmailData> data = [];
+  //   for (var element in dd.docs) {
+  //     data.add(EmailData(
+  //       hours: element.get("Hours"),
+  //       min: element.get("minutes"),
+  //       taskname: element.get("Taskname"),
+  //       clientname: element.get('ClientName'),
+  //     ));
+  //   }
+  //   var fi = data
+  //       .map((e) =>
+  //           '''${e.hours.toString()}:${e.min.toString()} :-   ${e.taskname.toString()}(${e.clientname})  \n''')
+  //       .join(" ");
+  //   final Email email = Email(
+  //     body: fi.toString(),
+  //     subject: '$name - Daily Task - ${dd.docs.first.get("Date")}',
+  //     recipients: ['ecareinfoway@gmail.com ', 'laxman@ecareinfoway.com '],
+  //     isHTML: false,
+  //   );
+  //   await FlutterEmailSender.send(email);
+  // }
+
+  Future<SendReport> sendEmails() async {
+    String username = 'jayveersinh.ecareinfoway@gmail.com';
+    String password = '9904455062';
+    late SendReport sendReport;
+    setState(() {
+      _sending = true;
+    });
     var dd = await DataBase("").getDailyTaskforEmail(name);
 
     List<EmailData> data = [];
@@ -64,19 +98,40 @@ class _HomeEmpState extends State<HomeEmp> {
         hours: element.get("Hours"),
         min: element.get("minutes"),
         taskname: element.get("Taskname"),
+        clientname: element.get('ClientName'),
       ));
     }
     var fi = data
         .map((e) =>
-            '''${e.hours.toString()}:${e.min.toString()} :-   ${e.taskname.toString()}  \n''')
+            '''${e.hours.toString()}:${e.min.toString()}  :-   ${e.taskname.toString()}(${e.clientname})  \n''')
         .join(" ");
-    final Email email = Email(
-      body: fi.toString(),
-      subject: '$name - Daily Task - ${dd.docs.first.get("Date")}',
-      recipients: ['ecareinfoway@gmail.com ', 'laxman@ecareinfoway.com '],
-      isHTML: false,
-    );
-    await FlutterEmailSender.send(email);
+
+    final smtpServer = gmail(username, password);
+
+    final message = Message()
+      ..from = Address(username, name)
+      ..recipients.add('ecareinfoway@gmail.com')
+      ..ccRecipients.addAll(['laxman@ecareinfoway.com'])
+      ..subject = '$name - Daily Task - ${dd.docs.first.get("Date")}'
+      ..text = fi.toString();
+
+    try {
+      sendReport = await send(message, smtpServer);
+
+      Get.showSnackbar(GetSnackBar(
+        message: "'Message sent: ' ${sendReport.toString()}",
+      ));
+      // ignore: unused_catch_clause
+    } on MailerException catch (e) {
+      print(e.message);
+      Get.showSnackbar(const GetSnackBar(
+        message: "Message not sent.",
+      ));
+    }
+    setState(() {
+      _sending = false;
+    });
+    return sendReport;
   }
 
   @override
@@ -89,10 +144,18 @@ class _HomeEmpState extends State<HomeEmp> {
           style: GoogleFonts.manrope(),
         ),
         actions: [
-          IconButton(
-            onPressed: _triggerEmail,
-            icon: const Icon(Icons.mark_email_read),
-          ),
+          _sending
+              ? const Center(
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
+                  ),
+                )
+              : IconButton(
+                  onPressed: () async {
+                    sendEmails();
+                  },
+                  icon: const Icon(Icons.mark_email_read),
+                ),
         ],
       ),
       body: _loading
