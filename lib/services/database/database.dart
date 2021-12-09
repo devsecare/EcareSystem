@@ -131,10 +131,14 @@ class DataBase extends GetxController {
     return await ref.get();
   }
 
-  Future<QuerySnapshot> getTask() async {
-    tasktoclose = await task.get();
-
-    return tasktoclose;
+  Future<QuerySnapshot> getTask([String? client]) async {
+    if (client != null) {
+      tasktoclose = await task.where("Clientname", isEqualTo: client).get();
+      return tasktoclose;
+    } else {
+      tasktoclose = await task.get();
+      return tasktoclose;
+    }
   }
 
   Future<QuerySnapshot> getTaskforUser() async {
@@ -155,6 +159,12 @@ class DataBase extends GetxController {
   Future closeTask(String id) async {
     await task.doc(id).update({
       "Active": false,
+    });
+  }
+
+  Future changeName(String id, name) async {
+    await client.doc(id).update({
+      "ClientName": name,
     });
   }
 

@@ -31,12 +31,13 @@ class _EmpRangeState extends State<EmpRange> {
       jj.add(int.parse(item.get("Hours")));
       vv.add(int.parse(item.get("minutes")));
     }
+    if (jj.isNotEmpty && vv.isNotEmpty) {
+      int total1 = jj.reduce((value, element) => value + element);
+      int totalmin = vv.reduce((value, element) => value + element);
 
-    int total1 = jj.reduce((value, element) => value + element);
-    int totalmin = vv.reduce((value, element) => value + element);
-
-    var dd1 = Duration(hours: total1, minutes: totalmin);
-    total = dd1.toString().substring(0, 5);
+      var dd1 = Duration(hours: total1, minutes: totalmin);
+      total = dd1.toString().substring(0, 5);
+    }
 
     setState(() {
       _loading = false;

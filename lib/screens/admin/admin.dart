@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecaresystem/constants.dart';
 import 'package:ecaresystem/screens/admin/admin_add_task.dart';
+import 'package:ecaresystem/screens/admin/client.dart';
 import 'package:ecaresystem/screens/admin/task_list_.dart';
 import 'package:ecaresystem/screens/department/department_.dart';
 import 'package:ecaresystem/screens/employee/employee1.dart';
@@ -24,6 +25,7 @@ class _AdminScreenState extends State<AdminScreen> {
   late QuerySnapshot user;
   late QuerySnapshot tasks;
   late QuerySnapshot department;
+  late QuerySnapshot clients;
   bool _loading = true;
   @override
   void initState() {
@@ -35,6 +37,7 @@ class _AdminScreenState extends State<AdminScreen> {
     user = await DataBase("").getUserCount();
     tasks = await DataBase("").getTask();
     department = await DataBase("").getDepartment();
+    clients = await DataBase("").getclient();
     setState(() {
       _loading = false;
     });
@@ -173,7 +176,9 @@ class _AdminScreenState extends State<AdminScreen> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            Get.to(() => const TaskListScreen());
+                            Get.to(() => TaskListScreen(
+                                  client: clients,
+                                ));
                           },
                           child: FittedBox(
                             child: AdminContainer(
@@ -195,6 +200,19 @@ class _AdminScreenState extends State<AdminScreen> {
                               dsubtitle: 'No. of departments',
                               img: dep,
                               num: department.docs.length.toString(),
+                            ),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            Get.to(() => const ClientScreen());
+                          },
+                          child: FittedBox(
+                            child: AdminContainer(
+                              dname: 'Cliets',
+                              dsubtitle: 'No. of Cliets',
+                              img: dep,
+                              num: clients.docs.length.toString(),
                             ),
                           ),
                         ),
