@@ -1,38 +1,35 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:ecaresystem/screens/admin/task_list_editing.dart';
 import 'package:ecaresystem/services/database/database.dart';
 import 'package:ecaresystem/widgets/client_container.dart';
 import 'package:flutter/material.dart';
-import 'package:get/route_manager.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../constants.dart';
 
-class ClientScreen extends StatefulWidget {
-  const ClientScreen({
-    Key? key,
-  }) : super(key: key);
+class TaskEditingScreen extends StatefulWidget {
+  final String clientname;
+  const TaskEditingScreen({Key? key, required this.clientname})
+      : super(key: key);
 
   @override
-  _ClientScreenState createState() => _ClientScreenState();
+  _TaskEditingScreenState createState() => _TaskEditingScreenState();
 }
 
-class _ClientScreenState extends State<ClientScreen> {
-  late QuerySnapshot clients;
+class _TaskEditingScreenState extends State<TaskEditingScreen> {
+  late QuerySnapshot task;
   bool _loading = true;
   final TextEditingController _newclient = TextEditingController();
-
   @override
   void initState() {
+    _getTask();
     super.initState();
-    _getClient();
   }
 
-  _getClient() async {
+  _getTask() async {
     setState(() {
       _loading = true;
     });
-    clients = await DataBase("").getclient();
+    task = await DataBase("").getTaskbyclient(widget.clientname);
     setState(() {
       _loading = false;
     });
@@ -46,13 +43,13 @@ class _ClientScreenState extends State<ClientScreen> {
             actionsAlignment: MainAxisAlignment.center,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(15.0)),
-            title: const Text('Enter New Name of Client'),
+            title: const Text('Enter New Name of Task'),
             content: TextField(
               controller: _newclient,
               // textInputAction: TextInputAction.go,
               keyboardType: TextInputType.text,
               decoration: const InputDecoration(
-                hintText: '| ClientName ',
+                hintText: '| Task ',
                 prefixIcon: Icon(
                   Icons.person,
                   color: Color(0xffE51C4C),
@@ -76,8 +73,8 @@ class _ClientScreenState extends State<ClientScreen> {
                 onPressed: () async {
                   print(id);
                   if (_newclient.text.isNotEmpty) {
-                    await DataBase("").changeName(id, _newclient.text);
-                    _getClient();
+                    await DataBase("").changeTaskName(id, _newclient.text);
+                    _getTask();
                   }
                   Navigator.pop(context);
                 },
@@ -101,7 +98,7 @@ class _ClientScreenState extends State<ClientScreen> {
       appBar: AppBar(
         backgroundColor: maincolor,
         elevation: 0.0,
-        title: const Text('Clients list'),
+        title: Text(widget.clientname),
       ),
       body: Stack(
         children: [
@@ -120,22 +117,15 @@ class _ClientScreenState extends State<ClientScreen> {
                   child: CircularProgressIndicator(),
                 )
               : ListView.builder(
-                  itemCount: clients.docs.length,
+                  itemCount: task.docs.length,
                   itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: () {
-                        Get.to(() => TaskEditingScreen(
-                              clientname: clients.docs[index]['ClientName'],
-                            ));
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: ClientContainer(
-                          name: clients.docs[index]['ClientName'],
-                          edit: () {
-                            _displayDialog(context, clients.docs[index].id);
-                          },
-                        ),
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ClientContainer(
+                        name: task.docs[index]['Taskname'],
+                        edit: () {
+                          _displayDialog(context, task.docs[index].id);
+                        },
                       ),
                     );
                   }),

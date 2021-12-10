@@ -283,7 +283,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                         controller: _taskname,
                         validator: (value) {
                           if (value!.isEmpty) {
-                            return "Please enter password";
+                            return "Please enter title";
                           }
                         },
                         decoration: const InputDecoration(
@@ -342,7 +342,6 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                       width: 80.w,
                       child: TextFormField(
                         controller: _hours,
-                        obscureText: true,
                         validator: (value) {
                           if (value!.isEmpty) {
                             return "Please enter hours";

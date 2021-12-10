@@ -40,7 +40,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
           borderRadius: BorderRadius.circular(20),
         ),
         child: Container(
-          height: 38.h,
+          height: 50.h,
           width: 80.w,
           decoration: BoxDecoration(
             color: maincolor,
@@ -124,13 +124,23 @@ class _TaskListScreenState extends State<TaskListScreen> {
         elevation: 0.0,
         title: const Text('Task list'),
         actions: [
-          IconButton(
-              onPressed: () {
-                displayDialog();
-              },
-              icon: const Icon(
-                Icons.sort,
-              ))
+          FittedBox(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: Column(
+                children: [
+                  IconButton(
+                      onPressed: () {
+                        displayDialog();
+                      },
+                      icon: const Icon(
+                        Icons.sort,
+                      )),
+                  const Text("Filter")
+                ],
+              ),
+            ),
+          )
         ],
       ),
       body: Stack(

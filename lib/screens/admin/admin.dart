@@ -209,8 +209,8 @@ class _AdminScreenState extends State<AdminScreen> {
                           },
                           child: FittedBox(
                             child: AdminContainer(
-                              dname: 'Cliets',
-                              dsubtitle: 'No. of Cliets',
+                              dname: 'Clients',
+                              dsubtitle: 'No. of Clients',
                               img: dep,
                               num: clients.docs.length.toString(),
                             ),

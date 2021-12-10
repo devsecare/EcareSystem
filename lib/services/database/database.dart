@@ -168,6 +168,12 @@ class DataBase extends GetxController {
     });
   }
 
+  Future changeTaskName(String id, name) async {
+    await task.doc(id).update({
+      "Taskname": name,
+    });
+  }
+
   Future<QuerySnapshot> getTest() async {
     return await dailyTask.get();
   }
