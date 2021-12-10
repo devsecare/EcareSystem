@@ -1,5 +1,7 @@
 import 'package:ecaresystem/constants.dart';
+import 'package:ecaresystem/model/test_model.dart';
 import 'package:ecaresystem/services/database/database.dart';
+import 'package:ecaresystem/widgets/tasklistcontainer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -18,7 +20,7 @@ class TaskFilScreen extends StatefulWidget {
 class _TaskFilScreenState extends State<TaskFilScreen> {
   final contro = Get.find<DataBase>();
   // ignore: prefer_typing_uninitialized_variables
-  var data;
+  List<TestModel> data = [];
 
   @override
   void initState() {
@@ -27,6 +29,7 @@ class _TaskFilScreenState extends State<TaskFilScreen> {
   }
 
   getData() async {
+    contro.totaltask.value = "00";
     data = await contro.getUserbyTask(widget.taskname);
   }
 
@@ -158,20 +161,29 @@ class _TaskFilScreenState extends State<TaskFilScreen> {
                     itemBuilder: (context, index) {
                       return Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Card(
-                          elevation: 10.0,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12.0)),
-                          child: ListTile(
-                            contentPadding: const EdgeInsets.all(10.0),
-                            tileColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            title: Text(data[index]),
-                          ),
+                        child: TaskListContainer(
+                          title: data[index].name,
+                          mini: data[index].min,
+                          hours: data[index].hours,
+                          comment: data[index].comment,
                         ),
                       );
+                      // return Padding(
+                      //   padding: const EdgeInsets.all(8.0),
+                      //   child: Card(
+                      //     elevation: 10.0,
+                      //     shape: RoundedRectangleBorder(
+                      //         borderRadius: BorderRadius.circular(12.0)),
+                      //     child: ListTile(
+                      //       contentPadding: const EdgeInsets.all(10.0),
+                      //       tileColor: Colors.white,
+                      //       shape: RoundedRectangleBorder(
+                      //         borderRadius: BorderRadius.circular(15),
+                      //       ),
+                      //       title: Text(data[index].name),
+                      //     ),
+                      //   ),
+                      // );
                     },
                   ),
           ),

@@ -79,7 +79,7 @@ class TaskListContainer extends StatelessWidget {
               Align(
                 alignment: Alignment.bottomLeft,
                 child: Text(
-                  comment!,
+                  comment ?? "",
                   style: GoogleFonts.manrope(
                     fontSize: 10.sp,
                     color: Colors.grey,

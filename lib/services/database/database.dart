@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ecaresystem/model/test_model.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
@@ -95,32 +96,51 @@ class DataBase extends GetxController {
     return await dailyTask.where("User", isEqualTo: username).get();
   }
 
-  Future<List<String>> getUserbyTask(String taskname) async {
+  Future<List<TestModel>> getUserbyTask(String taskname) async {
     loading(true);
-    var dd = await dailyTask.where("Taskname", isEqualTo: taskname).get();
+    var dd = await dailyTask
+        .where("Taskname", isEqualTo: taskname)
+        .orderBy("CreatedAt", descending: true)
+        .get();
     var task = dd.docs;
-    List<String> d = [];
+    // List<String> d = [];
+    List<TestModel> g = [];
+
     if (task.isNotEmpty) {
       List jj = [];
       List vv = [];
 
       for (var item in dd.docs) {
-        d.add(item["User"]);
+        // d.add(item["User"]);
+        g.add(
+          TestModel(
+            name: item["User"],
+            hours: item["Hours"].toString(),
+            min: item["minutes"].toString(),
+            comment: item["Date"].toString(),
+          ),
+        );
+
         jj.add(int.parse(item["Hours"]));
         vv.add(int.parse(item["minutes"]));
       }
-      d = d.toSet().toList();
+
+      // d = d.toSet().toList();
       int total1 = jj.reduce((value, element) => value + element);
       int totalmin = vv.reduce((value, element) => value + element);
 
       var dd1 = Duration(hours: total1, minutes: totalmin);
+
       totaltask(dd1.toString().substring(0, 5));
+
       update();
+
       loading(false);
     }
+
     loading(false);
 
-    return d;
+    return g;
   }
 
   Future getUser() async {
