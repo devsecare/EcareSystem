@@ -154,7 +154,7 @@ class _AdminScreenState extends State<AdminScreen> {
                     ),
                   ),
                   GridView.count(
-                      physics: const NeverScrollableScrollPhysics(),
+                      // physics: const NeverScrollableScrollPhysics(),
                       crossAxisCount: 2,
                       shrinkWrap: true,
                       childAspectRatio: 1.0,

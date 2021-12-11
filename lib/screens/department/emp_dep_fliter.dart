@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecaresystem/screens/employee/emp_range.dart';
 import 'package:ecaresystem/services/database/database.dart';
 import 'package:ecaresystem/widgets/tasklistcontainer.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';

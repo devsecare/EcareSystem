@@ -3,7 +3,6 @@ import 'package:ecaresystem/screens/department/employee_department_filter.dart';
 import 'package:ecaresystem/services/database/database.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/instance_manager.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class DepartmentFilter extends StatefulWidget {

@@ -72,7 +72,7 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                     "Marketing"
                                 ? mark
                                 : design,
-                        scale: 2.35,
+                        scale: 2.55,
                       ),
                     ),
                   ),

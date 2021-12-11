@@ -35,7 +35,7 @@ class _TaskEditingScreenState extends State<TaskEditingScreen> {
     });
   }
 
-  _displayDialog(BuildContext context, String id) async {
+  _displayDialog(BuildContext context, String id, String before) async {
     return showDialog(
         context: context,
         builder: (context) {
@@ -73,7 +73,8 @@ class _TaskEditingScreenState extends State<TaskEditingScreen> {
                 onPressed: () async {
                   print(id);
                   if (_newclient.text.isNotEmpty) {
-                    await DataBase("").changeTaskName(id, _newclient.text);
+                    await DataBase("")
+                        .changeTaskName(id, _newclient.text, before);
                     _getTask();
                   }
                   Navigator.pop(context);
@@ -119,14 +120,12 @@ class _TaskEditingScreenState extends State<TaskEditingScreen> {
               : ListView.builder(
                   itemCount: task.docs.length,
                   itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ClientContainer(
-                        name: task.docs[index]['Taskname'],
-                        edit: () {
-                          _displayDialog(context, task.docs[index].id);
-                        },
-                      ),
+                    return ClientContainer(
+                      name: task.docs[index]['Taskname'],
+                      edit: () {
+                        _displayDialog(context, task.docs[index].id,
+                            task.docs[index]['Taskname']);
+                      },
                     );
                   }),
         ],

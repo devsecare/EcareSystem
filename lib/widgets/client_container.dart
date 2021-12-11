@@ -37,37 +37,54 @@ class ClientContainer extends StatelessWidget {
               ), //Bo
             ]),
         width: 40.w,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Padding(
-              padding: const EdgeInsets.only(
-                  right: 15.0, top: 15.0, bottom: 15, left: 15),
-              child: Align(
-                alignment: Alignment.centerLeft,
+            // Padding(
+            //   padding: const EdgeInsets.only(
+            //       right: 15.0, top: 15.0, bottom: 15, left: 15),
+            //   child: Align(
+            //     alignment: Alignment.centerLeft,
+            //     child: FittedBox(
+            //       child: Text(
+            //         name,
+            //         style: GoogleFonts.manrope(
+            //           fontSize: 18.sp,
+            //           fontWeight: FontWeight.bold,
+            //         ),
+            //       ),
+            //     ),
+            //   ),
+            // ),
+            Flexible(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 10.0),
                 child: Text(
                   name,
                   style: GoogleFonts.manrope(
-                    fontSize: 18.sp,
                     fontWeight: FontWeight.bold,
+                    fontSize: 12.sp,
                   ),
                 ),
               ),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: TextButton.icon(
-                  onPressed: edit,
-                  icon: const Icon(
-                    Icons.edit,
-                    color: maincolor,
-                  ),
-                  label: const Text(
-                    "Edit",
-                    style: TextStyle(
+              child: FittedBox(
+                child: TextButton.icon(
+                    onPressed: edit,
+                    icon: const Icon(
+                      Icons.edit,
                       color: maincolor,
                     ),
-                  )),
+                    label: const Text(
+                      "Edit",
+                      style: TextStyle(
+                        color: maincolor,
+                      ),
+                    )),
+              ),
             )
           ],
         ),

@@ -5,7 +5,6 @@ import 'package:ecaresystem/services/auth.dart';
 import 'package:ecaresystem/services/database/database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';

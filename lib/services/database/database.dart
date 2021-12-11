@@ -182,13 +182,46 @@ class DataBase extends GetxController {
     });
   }
 
-  Future changeName(String id, name) async {
+  Future changeName(String id, name, before) async {
+    await dailyTask.where("ClientName", isEqualTo: before).get().then((value) {
+      // ignore: avoid_function_literals_in_foreach_calls
+      value.docs.forEach((element) {
+        element.reference.update({
+          "ClientName": name,
+        });
+      });
+    });
+    await task.where("Clientname", isEqualTo: before).get().then((value) {
+      // ignore: avoid_function_literals_in_foreach_calls
+      value.docs.forEach((element) {
+        element.reference.update({
+          "Clientname": name,
+        });
+      });
+    });
     await client.doc(id).update({
       "ClientName": name,
     });
   }
 
-  Future changeTaskName(String id, name) async {
+  Future changeTaskName(String id, name, before) async {
+    await dailyTask.where("Taskname", isEqualTo: before).get().then((value) {
+      // ignore: avoid_function_literals_in_foreach_calls
+      value.docs.forEach((element) {
+        element.reference.update({
+          "Taskname": name,
+        });
+      });
+    });
+    await task.where("Taskname", isEqualTo: before).get().then((value) {
+      // ignore: avoid_function_literals_in_foreach_calls
+      value.docs.forEach((element) {
+        element.reference.update({
+          "Taskname": name,
+        });
+      });
+    });
+
     await task.doc(id).update({
       "Taskname": name,
     });

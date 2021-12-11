@@ -38,7 +38,7 @@ class _ClientScreenState extends State<ClientScreen> {
     });
   }
 
-  _displayDialog(BuildContext context, String id) async {
+  _displayDialog(BuildContext context, String id, String before) async {
     return showDialog(
         context: context,
         builder: (context) {
@@ -76,7 +76,7 @@ class _ClientScreenState extends State<ClientScreen> {
                 onPressed: () async {
                   print(id);
                   if (_newclient.text.isNotEmpty) {
-                    await DataBase("").changeName(id, _newclient.text);
+                    await DataBase("").changeName(id, _newclient.text, before);
                     _getClient();
                   }
                   Navigator.pop(context);
@@ -128,14 +128,15 @@ class _ClientScreenState extends State<ClientScreen> {
                               clientname: clients.docs[index]['ClientName'],
                             ));
                       },
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: ClientContainer(
-                          name: clients.docs[index]['ClientName'],
-                          edit: () {
-                            _displayDialog(context, clients.docs[index].id);
-                          },
-                        ),
+                      child: ClientContainer(
+                        name: clients.docs[index]['ClientName'],
+                        edit: () {
+                          _displayDialog(
+                            context,
+                            clients.docs[index].id,
+                            clients.docs[index]['ClientName'],
+                          );
+                        },
                       ),
                     );
                   }),
