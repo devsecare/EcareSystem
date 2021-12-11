@@ -5,6 +5,7 @@ import 'package:ecaresystem/widgets/tasklistcontainer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../constants.dart';
@@ -24,6 +25,8 @@ class _EmpFilterState extends State<EmpFilter> {
   late List<QueryDocumentSnapshot> week;
   late List<QueryDocumentSnapshot> month;
   late List<QueryDocumentSnapshot> year;
+  late List<QueryDocumentSnapshot> today;
+  late List<QueryDocumentSnapshot> yesterday;
   late String total = "0";
   @override
   void initState() {
@@ -62,7 +65,7 @@ class _EmpFilterState extends State<EmpFilter> {
           borderRadius: BorderRadius.circular(20),
         ),
         child: Container(
-          height: 32.h,
+          height: 45.h,
           width: 80.w,
           decoration: BoxDecoration(
             color: Colors.white,
@@ -80,6 +83,46 @@ class _EmpFilterState extends State<EmpFilter> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 18.0, right: 18.00),
+                child: TextButton(
+                    onPressed: () {
+                      getbyToday();
+                      Navigator.pop(context);
+                      Get.to(() => EmpRange(
+                            name: widget.name,
+                            week: today,
+                          ));
+                    },
+                    child: Text(
+                      "Today",
+                      style: GoogleFonts.manrope(
+                        color: Colors.black,
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    )),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 18.0, right: 18.00),
+                child: TextButton(
+                    onPressed: () {
+                      getbyYesterday();
+                      Navigator.pop(context);
+                      Get.to(() => EmpRange(
+                            name: widget.name,
+                            week: yesterday,
+                          ));
+                    },
+                    child: Text(
+                      "Yesterday",
+                      style: GoogleFonts.manrope(
+                        color: Colors.black,
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    )),
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 18.0, right: 18.00),
@@ -168,6 +211,26 @@ class _EmpFilterState extends State<EmpFilter> {
         ),
       ),
     );
+  }
+
+  getbyToday() async {
+    var now = DateTime.now();
+    // var now_1w = now.subtract(const Duration(days: 1));
+    final DateFormat formatter = DateFormat('yMMMMd');
+    final String formatted = formatter.format(now);
+    today = dd.where((element) {
+      return element["Date"] == formatted;
+    }).toList();
+  }
+
+  getbyYesterday() async {
+    var now = DateTime.now();
+    var now_1w = now.subtract(const Duration(days: 1));
+    print(now_1w);
+    yesterday = dd.where((element) {
+      final date = (element["CreatedAt"] as Timestamp).toDate();
+      return now_1w.isBefore(date);
+    }).toList();
   }
 
   getByLastWeek() async {
