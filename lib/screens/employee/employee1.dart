@@ -36,48 +36,47 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
             ),
           ),
           ListView.builder(
-              itemCount: widget.user.docs.length,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Card(
-                    elevation: 10.0,
+            itemCount: widget.user.docs.length,
+            itemBuilder: (context, index) {
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Card(
+                  elevation: 10.0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: ListTile(
+                    minVerticalPadding: 25.0,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15),
                     ),
-                    child: ListTile(
-                      minVerticalPadding: 25.0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      onTap: () {
-                        Get.to(() => EmpFilter(
-                              name: widget.user.docs[index]["Name"],
-                            ));
-                      },
-                      tileColor: Colors.white,
-                      title: Text(
-                        "${widget.user.docs[index]["Name"]}",
-                        style: GoogleFonts.manrope(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12.sp,
-                        ),
-                      ),
-                      subtitle:
-                          Text("${widget.user.docs[index]['Department']}"),
-                      trailing: Image.asset(
-                        widget.user.docs[index]['Department'] == "Developer"
-                            ? dev
-                            : widget.user.docs[index]['Department'] ==
-                                    "Marketing"
-                                ? mark
-                                : design,
-                        scale: 2.55,
+                    onTap: () {
+                      Get.to(() => EmpFilter(
+                            name: widget.user.docs[index]["Name"],
+                          ));
+                    },
+                    tileColor: Colors.white,
+                    title: Text(
+                      "${widget.user.docs[index]["Name"]}",
+                      style: GoogleFonts.manrope(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12.sp,
                       ),
                     ),
+                    subtitle: Text("${widget.user.docs[index]['Department']}"),
+                    trailing: Image.asset(
+                      widget.user.docs[index]['Department'] == "Developer"
+                          ? dev
+                          : widget.user.docs[index]['Department'] == "Marketing"
+                              ? mark
+                              : design,
+                      scale: 2.55,
+                    ),
                   ),
-                );
-              }),
+                ),
+              );
+            },
+          ),
         ],
       ),
     );

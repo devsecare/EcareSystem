@@ -3,13 +3,12 @@ import 'package:ecaresystem/constants.dart';
 import 'package:ecaresystem/model/emailmodel.dart';
 import 'package:ecaresystem/services/auth.dart';
 import 'package:ecaresystem/services/database/database.dart';
+import 'package:ecaresystem/services/email_api.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:mailer/mailer.dart';
-import 'package:mailer/smtp_server/gmail.dart';
 import 'package:sizer/sizer.dart';
 
 class HomeEmp extends StatefulWidget {
@@ -57,35 +56,7 @@ class _HomeEmpState extends State<HomeEmp> {
     setState(() {});
   }
 
-  // _triggerEmail() async {
-  //   var dd = await DataBase("").getDailyTaskforEmail(name);
-
-  //   List<EmailData> data = [];
-  //   for (var element in dd.docs) {
-  //     data.add(EmailData(
-  //       hours: element.get("Hours"),
-  //       min: element.get("minutes"),
-  //       taskname: element.get("Taskname"),
-  //       clientname: element.get('ClientName'),
-  //     ));
-  //   }
-  //   var fi = data
-  //       .map((e) =>
-  //           '''${e.hours.toString()}:${e.min.toString()} :-   ${e.taskname.toString()}(${e.clientname})  \n''')
-  //       .join(" ");
-  //   final Email email = Email(
-  //     body: fi.toString(),
-  //     subject: '$name - Daily Task - ${dd.docs.first.get("Date")}',
-  //     recipients: ['ecareinfoway@gmail.com ', 'laxman@ecareinfoway.com '],
-  //     isHTML: false,
-  //   );
-  //   await FlutterEmailSender.send(email);
-  // }
-
-  Future<SendReport> sendEmails() async {
-    String username = 'jayveersinh.ecareinfoway@gmail.com';
-    String password = '9904455062';
-    late SendReport sendReport;
+  Future<void> sendEmails() async {
     setState(() {
       _sending = true;
     });
@@ -102,35 +73,28 @@ class _HomeEmpState extends State<HomeEmp> {
     }
     var fi = data
         .map((e) =>
-            '''${e.hours.toString()}:${e.min.toString()}  :-   ${e.taskname.toString()}(${e.clientname})  \n''')
+            '''${e.hours.toString()}:${e.min.toString()}  :-   ${e.taskname.toString()} (${e.clientname})\n''')
         .join(" ");
-
-    final smtpServer = gmail(username, password);
-
-    final message = Message()
-      ..from = Address(username, name)
-      ..recipients.add('ecareinfoway@gmail.com')
-      ..ccRecipients.addAll(['laxman@ecareinfoway.com'])
-      ..subject = '$name - Daily Task - ${dd.docs.first.get("Date")}'
-      ..text = fi.toString();
+    var subj = '$name - Daily Task - ${dd.docs.first.get("Date")}';
 
     try {
-      sendReport = await send(message, smtpServer);
+      // ignore: unused_local_variable
+      var res = await EmailAPi().sendEmail(fi.toString(), subj.toString());
 
-      Get.showSnackbar(GetSnackBar(
-        message: "'Message sent: ' ${sendReport.toString()}",
+      Get.showSnackbar(const GetSnackBar(
+        message: "Message sent: successfully 🤗",
       ));
       // ignore: unused_catch_clause
-    } on MailerException catch (e) {
-      print(e.message);
+    } catch (e) {
+      // ignore: avoid_print
+
       Get.showSnackbar(const GetSnackBar(
-        message: "Message not sent.",
+        message: "Message not sent.😕 🙁 ",
       ));
     }
     setState(() {
       _sending = false;
     });
-    return sendReport;
   }
 
   @override

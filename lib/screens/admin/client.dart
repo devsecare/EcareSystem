@@ -74,7 +74,6 @@ class _ClientScreenState extends State<ClientScreen> {
             actions: [
               TextButton.icon(
                 onPressed: () async {
-                  print(id);
                   if (_newclient.text.isNotEmpty) {
                     await DataBase("").changeName(id, _newclient.text, before);
                     _getClient();
@@ -89,7 +88,7 @@ class _ClientScreenState extends State<ClientScreen> {
                   "Save",
                   style: TextStyle(color: maincolor),
                 ),
-              )
+              ),
             ],
           );
         });
