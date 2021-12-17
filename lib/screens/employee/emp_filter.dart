@@ -225,11 +225,16 @@ class _EmpFilterState extends State<EmpFilter> {
 
   getbyYesterday() async {
     var now = DateTime.now();
-    var now_1w = now.subtract(const Duration(days: 1));
+    // var now_1w = now.subtract(const Duration(days: 1));
+    var now_1w = DateTime(now.year, now.month, now.day - 1);
+    final DateFormat formatter = DateFormat('yMMMMd');
+    final String formatted = formatter.format(now_1w);
+
     print(now_1w);
     yesterday = dd.where((element) {
-      final date = (element["CreatedAt"] as Timestamp).toDate();
-      return now_1w.isBefore(date);
+      // final date = (element["CreatedAt"] as Timestamp).toDate();
+      // return now_1w.isBefore(date);
+      return element["Date"] == formatted;
     }).toList();
   }
 

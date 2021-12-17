@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecaresystem/constants.dart';
+import 'package:ecaresystem/model/final_total.dart';
 import 'package:ecaresystem/screens/admin/task_fil_.dart';
 import 'package:ecaresystem/services/database/database.dart';
 import 'package:ecaresystem/widgets/taskcontainer.dart';
@@ -17,18 +18,19 @@ class TaskListScreen extends StatefulWidget {
 
 class _TaskListScreenState extends State<TaskListScreen> {
   Future<void> _pull() async {
-    getdd();
+    getFinalData();
     setState(() {});
   }
 
-  late QuerySnapshot data;
+  // late QuerySnapshot data;
   late List<QueryDocumentSnapshot> dd;
   bool _loading = true;
+  late List<FinalTotal> data;
   String? clientname;
   // final cro = Get.find<AuthService>();
   @override
   void initState() {
-    getdd();
+    getFinalData();
     super.initState();
   }
 
@@ -78,7 +80,8 @@ class _TaskListScreenState extends State<TaskListScreen> {
                                 clientname =
                                     widget.client.docs[index]['ClientName'];
 
-                                getdd(clientname);
+                                // getdd(clientname);
+                                getFinalData(clientname);
                                 Navigator.pop(context);
                               });
                             },
@@ -98,15 +101,32 @@ class _TaskListScreenState extends State<TaskListScreen> {
     );
   }
 
-  getdd([String? cl]) async {
+  // getdd([String? cl]) async {
+  //   setState(() {
+  //     _loading = true;
+  //   });
+  //   // data = await DataBase("").getTask(cl);
+  //   // dd = data.docs;
+
+  //   dd.sort((a, b) {
+  //     if (b["Active"]) {
+  //       return 1;
+  //     }
+  //     return -1;
+  //   });
+  //   setState(() {
+  //     _loading = false;
+  //   });
+  // }
+
+  getFinalData([String? cl]) async {
     setState(() {
       _loading = true;
     });
-    data = await DataBase("").getTask(cl);
-    dd = data.docs;
+    data = await DataBase("").testData(cl);
 
-    dd.sort((a, b) {
-      if (b["Active"]) {
+    data.sort((a, b) {
+      if (b.active) {
         return 1;
       }
       return -1;
@@ -162,22 +182,22 @@ class _TaskListScreenState extends State<TaskListScreen> {
               : RefreshIndicator(
                   onRefresh: _pull,
                   child: ListView.builder(
-                    itemCount: data.docs.length,
+                    itemCount: data.length,
                     itemBuilder: (context, index) {
                       return GestureDetector(
                         onTap: () {
                           Get.to(() => TaskFilScreen(
-                                taskname: dd[index]["Taskname"],
-                                id: dd[index].reference.id,
+                                taskname: data[index].name,
+                                // id: dd[index].reference.id,
                               ));
                         },
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: TaskContainer(
-                            active: dd[index]["Active"],
-                            title: dd[index]['Taskname'],
-                            comment: dd[index]['Clientname'],
-                            mini: dd[index]['EstHours'].toString(),
+                            active: data[index].active,
+                            title: data[index].name,
+                            comment: data[index].clientname,
+                            mini: data[index].total,
                           ),
                         ),
                       );

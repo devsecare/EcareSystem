@@ -7,6 +7,7 @@ import 'package:ecaresystem/screens/department/department_.dart';
 import 'package:ecaresystem/screens/employee/employee1.dart';
 import 'package:ecaresystem/services/auth.dart';
 import 'package:ecaresystem/services/database/database.dart';
+import 'package:ecaresystem/services/email_api.dart';
 import 'package:ecaresystem/widgets/admin_container.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -47,18 +48,67 @@ class _AdminScreenState extends State<AdminScreen> {
     test();
   }
 
+  Future<void> sendEmails() async {
+    var dd = await DataBase("").testData();
+
+    // var fi = dd
+    //     .map((e) =>
+    //         '''${e.hours.toString()}:${e.min.toString()}  :-   ${e.taskname.toString()} (${e.clientname}) <br> ''')
+    //     .join(" ");
+
+    var subj = 'Total of all Task Report';
+
+    var fi = dd.map((e) => '''
+${e.total} :-   ${e.name} (${e.clientname}) <br>
+    ''').join(" ");
+
+    try {
+      // ignore: unused_local_variable
+      var res = await EmailAPi().sendEmail(fi.toString(), subj.toString());
+      print(res);
+
+      Get.showSnackbar(
+        const GetSnackBar(
+          message: "Message sent: successfully 🤗 ",
+        ),
+      );
+      // ignore: unused_catch_clause
+    } catch (e) {
+      // ignore: avoid_print
+
+      Get.showSnackbar(const GetSnackBar(
+        message: "Message not sent.😕 🙁 ",
+      ));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Get.to(() => const AddTaskScreen());
-        },
-        backgroundColor: maincolor,
-        elevation: 10.0,
-        child: const Icon(
-          Icons.add,
-        ),
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          FloatingActionButton(
+            onPressed: () {
+              Get.to(() => const AddTaskScreen());
+            },
+            backgroundColor: maincolor,
+            elevation: 10.0,
+            child: const Icon(
+              Icons.add,
+            ),
+          ),
+          FloatingActionButton(
+            onPressed: () {
+              sendEmails();
+            },
+            backgroundColor: maincolor,
+            elevation: 10.0,
+            child: const Icon(
+              Icons.mail,
+            ),
+          ),
+        ],
       ),
       body: _loading
           ? const Center(

@@ -73,7 +73,7 @@ class _HomeEmpState extends State<HomeEmp> {
     }
     var fi = data
         .map((e) =>
-            '''${e.hours.toString()}:${e.min.toString()}  :-   ${e.taskname.toString()} (${e.clientname})\n''')
+            '''${e.hours.toString()}:${e.min.toString()}  :-   ${e.taskname.toString()} (${e.clientname}) <br> ''')
         .join(" ");
     var subj = '$name - Daily Task - ${dd.docs.first.get("Date")}';
 
@@ -81,9 +81,11 @@ class _HomeEmpState extends State<HomeEmp> {
       // ignore: unused_local_variable
       var res = await EmailAPi().sendEmail(fi.toString(), subj.toString());
 
-      Get.showSnackbar(const GetSnackBar(
-        message: "Message sent: successfully 🤗",
-      ));
+      Get.showSnackbar(
+        const GetSnackBar(
+          message: "Message sent: successfully 🤗 ",
+        ),
+      );
       // ignore: unused_catch_clause
     } catch (e) {
       // ignore: avoid_print

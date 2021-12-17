@@ -1,7 +1,12 @@
+// ignore_for_file: avoid_print
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ecaresystem/model/final_total.dart';
 import 'package:ecaresystem/model/test_model.dart';
+import 'package:ecaresystem/model/total_model.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import "package:collection/collection.dart";
 
 // ignore: non_constant_identifier_names
 String DAILYTASK = "Daily Tasks";
@@ -12,6 +17,9 @@ class DataBase extends GetxController {
   late QuerySnapshot tasktoclose;
   var totaltask = "0".obs;
   var loading = true.obs;
+
+  late QuerySnapshot testDaily;
+  late QuerySnapshot testTask;
 
   final CollectionReference ref = FirebaseFirestore.instance.collection("User");
   final CollectionReference task =
@@ -96,17 +104,24 @@ class DataBase extends GetxController {
     return await dailyTask.where("User", isEqualTo: username).get();
   }
 
+  Future<QuerySnapshot> getIdofTask(String taskname) async {
+    var dname = await task.where("Taskname", isEqualTo: taskname).get();
+    print("aaa tasknu name che ${dname.docs.first.id}");
+    return dname;
+  }
+
   Future<List<TestModel>> getUserbyTask(String taskname) async {
     loading(true);
     var dd = await dailyTask
         .where("Taskname", isEqualTo: taskname)
         .orderBy("CreatedAt", descending: true)
         .get();
-    var task = dd.docs;
+
+    var task1 = dd.docs;
     // List<String> d = [];
     List<TestModel> g = [];
 
-    if (task.isNotEmpty) {
+    if (task1.isNotEmpty) {
       List jj = [];
       List vv = [];
 
@@ -176,9 +191,17 @@ class DataBase extends GetxController {
     return await client.get();
   }
 
-  Future closeTask(String id) async {
+  Future closeTask(String id, String name) async {
     await task.doc(id).update({
       "Active": false,
+    });
+    await dailyTask.where("Taskname", isEqualTo: name).get().then((value) {
+      // ignore: avoid_function_literals_in_foreach_calls
+      value.docs.forEach((element) {
+        element.reference.update({
+          "Active": false,
+        });
+      });
     });
   }
 
@@ -249,17 +272,62 @@ class DataBase extends GetxController {
     final da = DateTime.now();
     final DateFormat formatter = DateFormat('yMMMMd');
     final String formatted = formatter.format(da);
-    // var dd = await dailyTask
-    //     .snapshots()
-    //     .map((event) => event.docs.where((element) =>
-    //         element["User"] == name && element["Date"] == formatted))
-    //     .toList();
-
-    // return dd;
 
     return await dailyTask
         .where("User", isEqualTo: name)
         .where("Date", isEqualTo: formatted)
         .get();
+  }
+
+  Future<List<FinalTotal>> testData([String? client]) async {
+    if (client != null) {
+      testDaily = await dailyTask.where("ClientName", isEqualTo: client).get();
+    } else {
+      testDaily = await dailyTask.get();
+    }
+
+    List<TotalModel> j1 = [];
+    List<FinalTotal> v1 = [];
+
+    testDaily.docs
+        .fold(<String, List<dynamic>>{}, (Map<String, List<dynamic>> a, b) {
+          a.putIfAbsent(b['Taskname'], () => []).add(b);
+          return a;
+        })
+        .values
+        .where((l) => l.isNotEmpty)
+        .map((l) => {
+              j1.add(TotalModel(
+                name: l.first['Taskname'],
+                clientname: l.first['ClientName'],
+                active: l.first['Active'],
+                hours: l.map((e) {
+                  return int.parse(e['Hours']);
+                }).toList(),
+                min: l.map((e) {
+                  return int.parse(e['minutes']);
+                }).toList(),
+              )),
+            })
+        .toList();
+
+    for (var item in j1) {
+      print(item.name);
+      print(item.min.sum);
+      int totalmin = item.min.sum;
+      int total1 = item.hours.sum;
+      print(item.hours.sum);
+      var dd1 = Duration(hours: total1, minutes: totalmin);
+      print("aa time che $dd1");
+      v1.add(
+        FinalTotal(
+          name: item.name,
+          total: dd1.toString().substring(0, 5),
+          clientname: item.clientname,
+          active: item.active,
+        ),
+      );
+    }
+    return v1;
   }
 }

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecaresystem/constants.dart';
 import 'package:ecaresystem/model/test_model.dart';
 import 'package:ecaresystem/services/database/database.dart';
@@ -9,8 +10,8 @@ import 'package:sizer/sizer.dart';
 
 class TaskFilScreen extends StatefulWidget {
   final String taskname;
-  final String id;
-  const TaskFilScreen({Key? key, required this.taskname, required this.id})
+  final String? id;
+  const TaskFilScreen({Key? key, required this.taskname, this.id})
       : super(key: key);
 
   @override
@@ -21,7 +22,7 @@ class _TaskFilScreenState extends State<TaskFilScreen> {
   final contro = Get.find<DataBase>();
   // ignore: prefer_typing_uninitialized_variables
   List<TestModel> data = [];
-
+  late QuerySnapshot id;
   @override
   void initState() {
     getData();
@@ -31,6 +32,7 @@ class _TaskFilScreenState extends State<TaskFilScreen> {
   getData() async {
     contro.totaltask.value = "00";
     data = await contro.getUserbyTask(widget.taskname);
+    id = await contro.getIdofTask(widget.taskname);
   }
 
   @override
@@ -69,8 +71,9 @@ class _TaskFilScreenState extends State<TaskFilScreen> {
                                             "Are you sure you want to Close this task?",
                                         onCancel: () {},
                                         onConfirm: () async {
-                                          await DataBase("")
-                                              .closeTask(widget.id);
+                                          await DataBase("").closeTask(
+                                              id.docs.first.id,
+                                              widget.taskname);
                                           Get.back();
                                           Get.snackbar("Task Closed",
                                               "Your Task is Closed",
