@@ -33,6 +33,9 @@ class DataBase extends GetxController {
   final CollectionReference client =
       FirebaseFirestore.instance.collection("Client");
 
+  final CollectionReference joiningCode =
+      FirebaseFirestore.instance.collection("joiningPassword");
+
   Future addTaskDaily(
     String date,
     String task,
@@ -53,6 +56,7 @@ class DataBase extends GetxController {
       "User": user,
       "ClientName": clientname,
       "CreatedAt": DateTime.now(),
+      "Active": true,
     });
   }
 
@@ -329,5 +333,26 @@ class DataBase extends GetxController {
       );
     }
     return v1;
+  }
+
+  Future<bool> getJoiningCode({required String code}) async {
+    late QuerySnapshot data;
+    late bool join;
+    print("aaa uprthi aave che $code");
+
+    data = await joiningCode.get();
+    String check = data.docs[0].get("joiningCode");
+    if (check == code) {
+      join = true;
+      print(join);
+    } else {
+      join = false;
+      print(join);
+    }
+
+    print(data.docs[0].get("joiningCode"));
+    print(join);
+
+    return join;
   }
 }

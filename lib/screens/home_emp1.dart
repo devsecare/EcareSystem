@@ -30,6 +30,7 @@ class _HomeEmpState extends State<HomeEmp> {
   late String clientname;
   late String hoursvalue;
   String? minutesvalue;
+  bool _load = false;
 
   final TextEditingController _comments = TextEditingController();
 
@@ -51,9 +52,14 @@ class _HomeEmpState extends State<HomeEmp> {
   }
 
   _getTaskbyClient(String cl) async {
+    setState(() {
+      _load = true;
+    });
     data = await DataBase("").getTaskbyclient(cl);
 
-    setState(() {});
+    setState(() {
+      _load = false;
+    });
   }
 
   Future<void> sendEmails() async {
@@ -221,50 +227,53 @@ class _HomeEmpState extends State<HomeEmp> {
                       height: 1.h,
                     ),
                     Center(
-                      child: DropdownButtonFormField(
-                        isExpanded: true,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          prefixIcon: const Icon(
-                            Icons.person,
-                            color: Color(0xffE51C4C),
-                          ),
-                        ),
-                        items: data.docs.map((e) {
-                          return DropdownMenuItem<String>(
-                            value: e['Taskname'],
-                            child: Text(
-                              e['Taskname'],
+                      child: _load
+                          ? const CircularProgressIndicator()
+                          : DropdownButtonFormField(
+                              isExpanded: true,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                prefixIcon: const Icon(
+                                  Icons.person,
+                                  color: Color(0xffE51C4C),
+                                ),
+                              ),
+                              items: data.docs.map((e) {
+                                return DropdownMenuItem<String>(
+                                  value: e['Taskname'],
+                                  child: Text(
+                                    e['Taskname'],
+                                    style: const TextStyle(
+                                        color: Colors.black,
+                                        overflow: TextOverflow.ellipsis),
+                                  ),
+                                );
+                              }).toList(),
+                              focusColor: Colors.white,
+                              // value: _chosenValue,
+                              elevation: 5,
                               style: const TextStyle(
-                                  color: Colors.black,
-                                  overflow: TextOverflow.ellipsis),
+                                color: Colors.white,
+                                fontSize: 14,
+                              ),
+                              iconEnabledColor: maincolor,
+                              icon:
+                                  const Icon(CupertinoIcons.arrow_down_circle),
+                              hint: Text(
+                                " | Please select Task*",
+                                style: GoogleFonts.poppins(
+                                    color: Colors.grey,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                              onChanged: (String? value) {
+                                setState(() {
+                                  taskvalue = value!;
+                                });
+                              },
                             ),
-                          );
-                        }).toList(),
-                        focusColor: Colors.white,
-                        // value: _chosenValue,
-                        elevation: 5,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                        ),
-                        iconEnabledColor: maincolor,
-                        icon: const Icon(CupertinoIcons.arrow_down_circle),
-                        hint: Text(
-                          " | Please select Task*",
-                          style: GoogleFonts.poppins(
-                              color: Colors.grey,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500),
-                        ),
-                        onChanged: (String? value) {
-                          setState(() {
-                            taskvalue = value!;
-                          });
-                        },
-                      ),
                     ),
                     SizedBox(
                       height: 1.h,

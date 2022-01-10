@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:986428445065:android:a75a4cdc77a678ebac1158",
+        "mobilesdk_app_id": "1:986428445065:android:b65a31c2790303c3ac1158",
         "android_client_info": {
-          "package_name": "com.example.ecaresystem"
+          "package_name": "com.ecareinfoway.ecaresystem"
         }
       },
       "oauth_client": [
@@ -29,6 +29,13 @@
             {
               "client_id": "986428445065-ml86jtscmc5g1uoph42bu1lf0cf8fr54.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "986428445065-hd5n0d2dt3jo5pv9hb6778iomm0pe9jk.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.ecaresystem"
+              }
             }
           ]
         }

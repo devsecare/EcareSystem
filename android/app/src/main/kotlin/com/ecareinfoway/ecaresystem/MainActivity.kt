@@ -1,4 +1,4 @@
-package com.example.ecaresystem
+package com.ecareinfoway.ecaresystem
 
 import io.flutter.embedding.android.FlutterActivity
 

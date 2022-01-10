@@ -20,10 +20,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _email = TextEditingController();
   final TextEditingController _password = TextEditingController();
   final TextEditingController _name = TextEditingController();
+  final TextEditingController _joiningcode = TextEditingController();
   final _formkey = GlobalKey<FormState>();
   final _auth = Get.find<AuthService>();
   late QuerySnapshot data;
   bool _loading = true;
+  bool _load = false;
   late String departmentvalue;
   @override
   void initState() {
@@ -91,7 +93,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     elevation: 10,
                     borderRadius: BorderRadius.circular(20.0),
                     child: Container(
-                      height: 50.h,
+                      height: 55.h,
                       width: 90.w,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20.0),
@@ -125,7 +127,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 height: 2.h,
                               ),
                               SizedBox(
-                                width: 80.w,
+                                width: 85.w,
                                 child: TextFormField(
                                   autocorrect: true,
                                   controller: _name,
@@ -165,7 +167,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               _loading
                                   ? const CircularProgressIndicator()
                                   : SizedBox(
-                                      width: 80.w,
+                                      width: 85.w,
                                       child: DropdownButtonFormField(
                                         decoration: InputDecoration(
                                           border: OutlineInputBorder(
@@ -211,7 +213,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 height: 2.h,
                               ),
                               SizedBox(
-                                width: 80.w,
+                                width: 85.w,
                                 child: TextFormField(
                                   autocorrect: true,
                                   controller: _email,
@@ -249,7 +251,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 height: 2.h,
                               ),
                               SizedBox(
-                                width: 80.w,
+                                width: 85.w,
                                 child: TextFormField(
                                   autocorrect: true,
                                   controller: _password,
@@ -285,25 +287,91 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 ),
                               ),
                               SizedBox(
+                                height: 2.h,
+                              ),
+                              SizedBox(
+                                width: 85.w,
+                                child: TextFormField(
+                                  autocorrect: true,
+                                  controller: _joiningcode,
+                                  obscureText: false,
+                                  validator: (value) {
+                                    if (value!.isEmpty) {
+                                      return "Please enter joining password";
+                                    }
+                                  },
+                                  decoration: const InputDecoration(
+                                    hintText: '| joining password ',
+                                    prefixIcon: Icon(
+                                      Icons.lock,
+                                      color: Color(0xffE51C4C),
+                                    ),
+                                    hintStyle: TextStyle(color: Colors.grey),
+                                    filled: true,
+                                    fillColor: Colors.white70,
+                                    focusColor: Color(0xffE51C4C),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(12.0)),
+                                      borderSide: BorderSide(
+                                          color: Colors.grey, width: 1),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(10.0)),
+                                      borderSide: BorderSide(
+                                          color: Color(0xffE51C4C), width: 2),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
                                 height: 2.5.h,
                               ),
                               ElevatedButton.icon(
                                 onPressed: () async {
                                   if (_formkey.currentState!.validate()) {
-                                    await AuthService()
-                                        .signUp(_email.text, _password.text)
-                                        .then((val) async {
-                                      await DataBase(_auth.user.value!.uid)
-                                          .updateUser(
-                                              _name.text,
-                                              departmentvalue,
-                                              _auth.user.value!.uid);
-                                      Get.back();
+                                    setState(() {
+                                      _load = true;
+                                    });
+                                    await DataBase("")
+                                        .getJoiningCode(
+                                      code: _joiningcode.text.toString().trim(),
+                                    )
+                                        .then((value) async {
+                                      if (value) {
+                                        await AuthService()
+                                            .signUp(_email.text, _password.text)
+                                            .then((val) async {
+                                          await DataBase(_auth.user.value!.uid)
+                                              .updateUser(
+                                                  _name.text,
+                                                  departmentvalue,
+                                                  _auth.user.value!.uid);
+                                          Get.back();
+                                        });
+                                        setState(() {
+                                          _load = false;
+                                        });
+                                      } else {
+                                        print("naaaa");
+                                        setState(() {
+                                          _load = false;
+                                          Get.showSnackbar(const GetSnackBar(
+                                            message:
+                                                "Not valid joining Code.😕 🙁 ",
+                                          ));
+                                        });
+                                      }
                                     });
                                   }
                                 },
                                 icon: const Icon(Icons.arrow_forward_ios),
-                                label: const Text("REGISTER"),
+                                label: _load
+                                    ? const CircularProgressIndicator(
+                                        color: Colors.white,
+                                      )
+                                    : const Text("REGISTER"),
                                 style: ElevatedButton.styleFrom(
                                   primary: const Color(0xffE51C4C),
                                   minimumSize: Size(80.w, 6.h),
@@ -324,7 +392,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                   ),
                   SizedBox(
-                    height: 5.h,
+                    height: 3.h,
                   ),
                   Center(
                     child: RichText(

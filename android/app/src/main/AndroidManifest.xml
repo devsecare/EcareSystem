@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.ecaresystem">
+    package="com.ecareinfoway.ecaresystem">
    <application
         android:label="ecaresystem"
         android:icon="@mipmap/launcher_icon">
